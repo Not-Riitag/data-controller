@@ -1,21 +1,49 @@
-const MongoClient = require('mongodb').MongoClient;
-const fs = require('fs')
-
-if (!fs.existsSync('config.json'))
-    fs.writeFileSync('config.json', JSON.stringify({uri: 'mongodb://localhost:27017/'}))
-
-const client = new MongoClient(JSON.parse(String(fs.readFileSync('config.json'))).uri)
-
-client.connect()
+const { getConnection } = require('./Connection');
+const {UniqueID} = require('nodejs-snowflake')
+const crypto = require('crypto');
+const { createSession } = require('./SessionManager');
 
 class UserManager {
 
+    static async createUser (data) {
+        const database = getConnection().db('not-riitag');
+        const users = database.collection('users');
+        const user = await users.insertOne({
+            id: new UniqueID({}).getUniqueID(),
+            username: data.username,
+            email: data.email,
+            password: crypto.scryptSync(data.password, data.username, 64).toString('hex')
+        })
+
+        return user
+    }
+
+    static async getUserLogin (username, password) {
+        const database = getConnection().db('not-riitag');
+        const users = database.collection('users');
+        const user = await users.findOne({ username })
+        if (user && crypto.scryptSync(password, user.username, 64).toString('hex') === user.password) {
+            return createSession(user.id);
+        }
+        return null;
+    }
+
     static async getAdminUser () {
-      const database = client.db('not-riitag');
+      const database = getConnection().db('not-riitag');
       const users = database.collection('users');
       const user = await users.findOne({})
+      
       return user;
     }
+
+    static async getUser (id) {
+      const database = getConnection().db('not-riitag');
+      const users = database.collection('users');
+      const user = await users.findOne({ id })
+        
+      return user;    
+    }
+
 }
 
 module.exports = UserManager;
