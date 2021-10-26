@@ -1,5 +1,10 @@
 const MongoClient = require('mongodb').MongoClient;
-const client = new MongoClient('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false')
+const fs = require('fs')
+
+if (!fs.existsSync('config.json'))
+    fs.writeFileSync('config.json', JSON.stringify({uri: 'mongodb://localhost:27017/'}))
+
+const client = new MongoClient(JSON.parse(String(fs.readFileSync('config.json'))))
 
 client.connect()
 
