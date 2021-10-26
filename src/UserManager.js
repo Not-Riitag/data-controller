@@ -39,7 +39,7 @@ class UserManager {
     static async getUser (id, filters={}) {
       const database = getConnection().db('not-riitag');
       const users = database.collection('users');
-      const user = await users.findOne({ id }, filters)
+      const user = await users.findOne({ id }, {projection: filters})
         
       return user;    
     }
