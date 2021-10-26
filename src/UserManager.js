@@ -36,10 +36,10 @@ class UserManager {
       return user;
     }
 
-    static async getUser (id) {
+    static async getUser (id, filters={}) {
       const database = getConnection().db('not-riitag');
       const users = database.collection('users');
-      const user = await users.findOne({ id })
+      const user = await users.findOne({ id }, filters)
         
       return user;    
     }
