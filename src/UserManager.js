@@ -36,10 +36,16 @@ class UserManager {
       return user;
     }
 
-    static async getUser (id, filters={}) {
+    /**
+     * Search the user database by a provided search type and filter.
+     * @param {Object} search 
+     * @param {*} filters 
+     * @returns 
+     */
+    static async getUser (search, filters={}) {
       const database = getConnection().db('not-riitag');
       const users = database.collection('users');
-      const user = await users.findOne({ id }, {projection: filters})
+      const user = await users.findOne(search, {projection: filters})
         
       return user;    
     }
