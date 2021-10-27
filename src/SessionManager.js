@@ -25,7 +25,7 @@ class SessionManager {
         const session = await getCollection(Database.SESSIONS).findOne({ user: user.id })
         if (session == null) return await SessionManager.createSession(user)
 
-        return session
+        return new Session(session)
     }
 
     /**
@@ -41,7 +41,7 @@ class SessionManager {
             createdAt: new Date()
         })
 
-        return session    
+        return new Session(session)    
     }
 }
 
