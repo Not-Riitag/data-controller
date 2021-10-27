@@ -2,6 +2,7 @@ const { getConnection } = require('./Connection');
 const {UniqueID} = require('nodejs-snowflake')
 const crypto = require('crypto');
 const { createSession } = require('./SessionManager');
+const Permissions = require('./Enum/Permissions');
 
 class UserManager {
 
@@ -12,10 +13,15 @@ class UserManager {
             id: new UniqueID({}).getUniqueID(),
             username: data.username,
             email: data.email,
-            password: crypto.scryptSync(data.password, data.username, 64).toString('hex')
+            password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
+            permissions: Permissions.USER
         })
 
         return user
+    }
+
+    static async hasPermission (user, permission) {
+        return user.permissions % permission
     }
 
     static async getUserLogin (username, password) {
