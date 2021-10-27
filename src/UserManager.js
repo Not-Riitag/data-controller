@@ -33,7 +33,7 @@ class UserManager {
             permissions: Permissions.USER
         })
 
-        return user
+        return new User(user)
     }
 
     /**
@@ -68,8 +68,8 @@ class UserManager {
      * @returns {User}
      */
     static async getUser (search, filters={}) {        
-      return await getCollection(Database.USERS)
-        .findOne(search, {projection: filters});    
+      return new User(await getCollection(Database.USERS)
+        .findOne(search, {projection: filters}));
     }
 
 }
