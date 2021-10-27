@@ -35,12 +35,13 @@ class SessionManager {
      * @returns {Session}
      */
     static async createSession(user) {
-        await getCollection(Database.SESSIONS).insertOne({
-            user,
+        const session = {
+            user: user.id,
             token: crypto.randomBytes(32).toString('hex'),
             createdAt: new Date()
-        })
+        }
 
+        await getCollection(Database.SESSIONS).insertOne(session)
         return new Session(session)    
     }
 }

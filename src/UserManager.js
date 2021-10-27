@@ -1,7 +1,7 @@
 const { getCollection } = require('./Connection');
 const {UniqueID} = require('nodejs-snowflake')
 const crypto = require('crypto');
-const { createSession } = require('./SessionManager');
+const { createSession, findSession } = require('./SessionManager');
 
 const Permissions = require('./Enum/Permissions');
 const Database = require('./Enum/Database');
@@ -31,7 +31,7 @@ class UserManager {
             email: data.email,
             password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
             permissions: Permissions.USER,
-            created = new Date()
+            created: new Date()
         })
 
         return new User(user)
@@ -46,7 +46,7 @@ class UserManager {
      */
     static async getUserLogin (username, password) {
         const user = await getCollection(Database.USERS).findOne({ username })
-        if (user && crypto.scryptSync(password, user.username, 64).toString('hex') === user.password) return createSession(user.id)
+        if (user && crypto.scryptSync(password, user.username, 64).toString('hex') === user.password) return findSession(user)
         
         return null
     }
