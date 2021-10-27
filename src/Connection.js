@@ -11,6 +11,10 @@ class Connection {
     static getConnection() {
         return client
     }
+
+    static getCollection(collection) {
+        return client.db('not-riitag').collection(collection)
+    }
 }
 
 module.exports = Connection
