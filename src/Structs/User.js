@@ -1,15 +1,35 @@
 const Permissions = require("../Enum/Permissions")
 
 class User {
+    /**
+     * @type {string}
+     */
     id = '0'
 
+    /**
+     * @type {string}
+     */
     username = undefined
 
+    /**
+     *  @type {string}
+     */
     email = undefined
 
+    /**
+     * @type {string}
+     */
     password = undefined
 
+    /**
+     * @type {Permissions}
+     */
     permissions = Permissions.USER
+
+    /**
+     * @type {Date}
+     */
+    created = undefined
 
     constructor (data) {
         Object.assign(this, data)

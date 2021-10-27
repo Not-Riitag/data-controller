@@ -30,7 +30,8 @@ class UserManager {
             username: data.username,
             email: data.email,
             password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
-            permissions: Permissions.USER
+            permissions: Permissions.USER,
+            created = new Date()
         })
 
         return new User(user)
