@@ -1,37 +1,48 @@
-const { getConnection } = require('./Connection')
-const crypto = require('crypto')
+const { getCollection } = require('./Connection')
+const crypto = require('crypto');
+const Database = require('./Enum/Database');
+const User = require('./Structs/User');
+const Session = require('./Structs/Session');
 
 class SessionManager {
+    /**
+     * Get a session by the provided token.
+     * @param {String} token 
+     * @async
+     * @returns {Session}
+     */
     static async getSession(token) {
-        const database = getConnection().db('not-riitag');
-        const sessions = database.collection('sessions');
-        const session = await sessions.findOne({ token })
-
-        return session
+        return await getCollection(Database.SESSIONS).findOne({ token })
     }
 
+    /**
+     * Find a session for the provided user, if it doesn't exist, create one.
+     * @param {User} user
+     * @async 
+     * @returns {Session}
+     */
     static async findSession(user) {
-        const database = getConnection().db('not-riitag');
-        const sessions = database.collection('sessions');
-        const session = await sessions.findOne({ user })
+        const session = await getCollection(Database.SESSIONS).findOne({ user: user.id })
+        if (session == null) return await SessionManager.createSession(user)
 
-        if (session == null) return null
-
-        return session
+        return new Session(session)
     }
 
+    /**
+     * Create a new session for the provided user.
+     * @param {User} user
+     * @async 
+     * @returns {Session}
+     */
     static async createSession(user) {
-        const database = getConnection().db('not-riitag');
-        const sessions = database.collection('sessions');
         const session = {
-            user,
+            user: user.id,
             token: crypto.randomBytes(32).toString('hex'),
             createdAt: new Date()
         }
 
-        await sessions.insertOne(session)
-
-        return session    
+        await getCollection(Database.SESSIONS).insertOne(session)
+        return new Session(session)    
     }
 }
 
