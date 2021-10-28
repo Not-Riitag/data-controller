@@ -7,6 +7,7 @@ const Permissions = require('./Enum/EnumPermissions');
 const Database = require('./Enum/Database');
 const User = require('./Structs/User');
 const Session = require('./Structs/Session');
+const PasswordUtils = require('./PasswordUtils');
 
 /**
  * @typedef {Object} UserProperties
@@ -24,7 +25,8 @@ class UserManager {
      * @returns {User|null}
      */
     static async createUser (data) {
-        if (await UserManager.getUser({ username: data.username })) return null // If the username already exists, return null
+        if (await UserManager.getUser({ username: data.username })) return { message: 'A user with that username already exists' } // If the username already exists, return null
+        if (!PasswordUtils.checkPolicy(data.password).isValid) return { message: PasswordUtils.checkPolicy(data.password).message }
 
         const user = await getCollection(Database.USERS).insertOne({
             id: new UniqueID({}).getUniqueID(),
