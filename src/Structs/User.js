@@ -19,6 +19,11 @@ class User {
     /**
      * @type {string}
      */
+    avatar = undefined
+
+    /**
+     * @type {string}
+     */
     password = undefined
 
     /**
