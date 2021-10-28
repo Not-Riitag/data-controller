@@ -70,7 +70,7 @@ class UserManager {
      */
     static async getUser (search, filters={}) {     
       const user = await getCollection(Database.USERS).findOne(search, {projection: filters});
-      return user ? new User(user) : null
+      return user != null ? new User(user) : null
     }
 
 }
