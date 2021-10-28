@@ -3,9 +3,10 @@ const {UniqueID} = require('nodejs-snowflake')
 const crypto = require('crypto');
 const { createSession, findSession } = require('./SessionManager');
 
-const Permissions = require('./Enum/Permissions');
+const Permissions = require('./Enum/EnumPermissions');
 const Database = require('./Enum/Database');
 const User = require('./Structs/User');
+const Session = require('./Structs/Session');
 
 /**
  * @typedef {Object} UserProperties
@@ -42,7 +43,7 @@ class UserManager {
      * @param {String} username 
      * @param {String} password
      * @async
-     * @returns {User|null}
+     * @returns {Session|null}
      */
     static async getUserLogin (username, password) {
         const user = await getCollection(Database.USERS).findOne({ username })

@@ -1,4 +1,4 @@
-const Permissions = require("../Enum/Permissions")
+const Permissions = require("./Permissions")
 
 class User {
     /**
@@ -29,7 +29,7 @@ class User {
     /**
      * @type {Permissions}
      */
-    permissions = Permissions.USER
+    permissions = undefined
 
     /**
      * @type {Date}
@@ -38,6 +38,8 @@ class User {
 
     constructor (data) {
         Object.assign(this, data)
+
+        this.permissions = new Permissions(this.permissions) // Assign a permission handler.
     }
     
     /**
