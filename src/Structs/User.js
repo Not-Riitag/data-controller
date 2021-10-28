@@ -47,7 +47,7 @@ class User {
      * @returns {Boolean}
      */
     hasPermission (permission) {
-        return this.permissions % permission === 0
+        return this.permissions & permission === permission
     }
 }
 
