@@ -6,6 +6,7 @@ const config = require('./config.json')
 async function run () {
     /** */
     const session = await getUserLogin(config.username, config.password)
+    const user = await getUser(session.user)
     console.log(user)
 
     console.log(user.permissions.has(EnumPermissions.MODERATOR))
