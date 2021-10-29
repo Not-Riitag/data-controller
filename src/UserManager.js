@@ -25,7 +25,9 @@ class UserManager {
      * @returns {User|null}
      */
     static async createUser (data) {
+        // Validate that the email and username aren't already in use.
         if (await UserManager.getUser({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) return { message: 'A user with that username or email already exists' } // If the username already exists, return null
+        // Validate the password security.
         if (!PasswordUtils.checkPolicy(data.password).isValid) return { message: PasswordUtils.checkPolicy(data.password).message }
 
         const user = {
@@ -38,7 +40,6 @@ class UserManager {
         }
 
         await getCollection(Database.USERS).insertOne(user)
-
         return new User(user)
     }
 
@@ -63,7 +64,7 @@ class UserManager {
      */
     static async getAdminUser () {
       return await UserManager
-        .getUser({ permissions: Permissions.ADMIN })
+        .getUser({ permissions: 1022 })
     }
 
     /**
