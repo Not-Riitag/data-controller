@@ -7,7 +7,6 @@ const Permissions = require('./Enum/EnumPermissions');
 const Database = require('./Enum/Database');
 const User = require('./Structs/User');
 const Session = require('./Structs/Session');
-const PasswordUtils = require('./PasswordUtils');
 
 /**
  * @typedef {Object} UserProperties
@@ -25,21 +24,17 @@ class UserManager {
      * @returns {User|null}
      */
     static async createUser (data) {
-        // Validate that the email and username aren't already in use.
-        if (await UserManager.getUser({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) return { message: 'A user with that username or email already exists' } // If the username already exists, return null
-        // Validate the password security.
-        if (!PasswordUtils.checkPolicy(data.password).isValid) return { message: PasswordUtils.checkPolicy(data.password).message }
+        if (await UserManager.getUser({ username: data.username })) return null // If the username already exists, return null
 
-        const user = {
+        const user = await getCollection(Database.USERS).insertOne({
             id: new UniqueID({}).getUniqueID(),
             username: data.username,
             email: data.email,
             password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
             permissions: Permissions.USER,
             created: new Date()
-        }
+        })
 
-        await getCollection(Database.USERS).insertOne(user)
         return new User(user)
     }
 
@@ -64,7 +59,7 @@ class UserManager {
      */
     static async getAdminUser () {
       return await UserManager
-        .getUser({ permissions: 1022 })
+        .getUser({ permissions: Permissions.ADMIN })
     }
 
     /**

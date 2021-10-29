@@ -1,4 +1,3 @@
-const EnumPermissions = require("../Enum/EnumPermissions")
 const Permission = require("../Enum/EnumPermissions")
 
 class Permissions {
@@ -37,10 +36,6 @@ class Permissions {
     has (permission) {
         if (this.permissions & 0x2) return true
         return (this.permissions & permission) === permission
-    }
-
-    toString () {
-        return Object.entries(EnumPermissions).filter(entry => this.has(entry[1])).map((entry) => entry[0])
     }
 
 }
