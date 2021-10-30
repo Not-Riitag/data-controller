@@ -12,6 +12,10 @@ class Connection {
         return client
     }
 
+    static close() {
+        client.close()
+    }
+
     static getCollection(collection) {
         return client.db('not-riitag').collection(collection)
     }

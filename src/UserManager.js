@@ -35,7 +35,7 @@ class UserManager {
             username: data.username,
             email: data.email,
             password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
-            permissions: Permissions.USER,
+            permissions: data.permissions || 0,
             created: new Date()
         }
 
@@ -58,13 +58,13 @@ class UserManager {
     }
 
     /**
-     * Select and return the first admin user from the database.
+     * Select and return the master admin user from the database.
      * @async
      * @returns {User}
      */
-    static async getAdminUser () {
+    static async getMasterAdminUser () {
       return await UserManager
-        .getUser({ permissions: 1022 })
+        .getUser({ id: 0 })
     }
 
     /**

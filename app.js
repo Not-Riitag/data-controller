@@ -5,7 +5,7 @@ const config = require('./config.json')
 
 async function run () {
     /** */
-    const session = await getUserLogin(config.username, config.password)
+    const session = await getUserLogin(config.user.user, config.user.password)
     const user = await getUser({ id: session.user })
     console.log(user)
 

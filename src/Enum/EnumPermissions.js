@@ -10,5 +10,5 @@ module.exports = {
     UPLOAD_CONTENT: 1 << 5,
     
     VIEW_DASHBOARD: 1 << 6,
-    VIEW_DASHBOARD_STATISTICS: 1 << 7
+    VIEW_DASHBOARD_STATISTICS: 1 << 7,
 }
