@@ -1,3 +1,4 @@
+const { getCollection } = require("../Connection")
 const Permissions = require("./Permissions")
 
 class User {
@@ -41,15 +42,13 @@ class User {
 
         this.permissions = new Permissions(this.permissions) // Assign a permission handler.
     }
-    
+
     /**
-     * Check the users' credentials against a certain permission level.
-     * @param {User} user 
-     * @param {Permissions} permission 
-     * @returns {Boolean}
+     * Update the data within a user document.
+     * @param {User} data 
      */
-    hasPermission (permission) {
-        return this.permissions & permission === permission
+    update (data) {
+        getCollection('users').updateOne({ id: this.id }, { $set: data })
     }
 }
 
