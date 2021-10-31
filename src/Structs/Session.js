@@ -1,6 +1,9 @@
+const UserManager = require('../UserManager');
+const User = require ('./User')
+
 class Session {
     /**
-     * @type {string}
+     * @type {User}
      */
     user = undefined
 
@@ -15,7 +18,7 @@ class Session {
     createdAt = undefined
 
     constructor(data) {
-        Object.assign(this, data)
+        Object.assign(this, data, UserManager.getUser({ id: data.user.id }))
     }
 }
 

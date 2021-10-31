@@ -6,24 +6,6 @@ const Session = require('./Structs/Session');
 
 class SessionManager {
     /**
-     * Get a session by the provided token.
-     * @param {String} token 
-     * @async
-     * @returns {Session}
-     */
-    static async getSession(token) {
-        return await getCollection(Database.SESSIONS).findOne({ token })
-    }
-
-    /**
-     * Remove a session by the user ID.
-     * @param {String} user 
-     */
-    static async removeSession(user) {
-        await getCollection(Database.SESSIONS).deleteOne({ user: user.id })
-    }
-
-    /**
      * Parse the supplied authorization header and return the associated session.
      * @param {String} string header 
      * @returns {Session}
@@ -38,13 +20,31 @@ class SessionManager {
     }
 
     /**
-     * Find a session for the provided user, if it doesn't exist, create one.
-     * @param {User} user
-     * @async 
+     * Get a session by the provided data filters.
+     * @param {Session} filter 
+     * @async
      * @returns {Session}
      */
-    static async findSession(user) {
-        const session = await getCollection(Database.SESSIONS).findOne({ user: user.id })
+    static async get (filter) {
+        return await getCollection(Database.SESSIONS).findOne(filter)
+    }
+
+    /**
+     * Remove a session by the user ID.
+     * @param {String} user 
+     */
+    static async remove (user) {
+        await getCollection(Database.SESSIONS).deleteOne({ user: user.id })
+    }
+
+    /**
+     * Find a session for the provided user, if it doesn't exist, create one.
+     * @param {User} user
+     * @async
+     * @returns {Session}
+     */
+    static async find (user) {
+        const session =　await this.getSession({ user: user.id })
         if (session == null) return await SessionManager.createSession(user)
 
         return new Session(session)
@@ -56,7 +56,7 @@ class SessionManager {
      * @async 
      * @returns {Session}
      */
-    static async createSession(user) {
+    static async create (user) {
         const session = {
             user: user.id,
             token: crypto.randomBytes(32).toString('hex'),
