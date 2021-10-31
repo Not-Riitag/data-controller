@@ -34,8 +34,8 @@ class UserManager {
             id: new UniqueID({}).getUniqueID(),
             username: data.username,
             email: data.email,
-            password: crypto.scryptSync(data.password, data.username, 64).toString('hex'),
-            permissions: Permissions.USER,
+            password: PasswordUtils.makePassword(data.password, data.username),
+            permissions: 0,
             created: new Date()
         }
 
