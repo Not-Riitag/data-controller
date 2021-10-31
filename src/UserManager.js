@@ -73,6 +73,7 @@ class UserManager {
     /**
      * Remove the user from the database.
      * @param {UserProperties} search 
+     * @async
      * @returns 
      */
     static async remove (search) {
