@@ -16,6 +16,14 @@ class SessionManager {
     }
 
     /**
+     * Remove a session by the user ID.
+     * @param {String} user 
+     */
+    static async removeSession(user) {
+        await getCollection(Database.SESSIONS).deleteOne({ user: user.id })
+    }
+
+    /**
      * Parse the supplied authorization header and return the associated session.
      * @param {String} string header 
      * @returns {Session}
