@@ -11,7 +11,7 @@ class PasswordUtils {
     }
 
     static makePassword (password, salt) {
-        return crypto.scryptSync(password, crypto.createHash('sha256').update(salt).digest('hex'), 64).toString('hex')
+        return crypto.scryptSync(password, salt, 64).toString('hex')
     }
 }
 
