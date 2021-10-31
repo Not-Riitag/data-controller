@@ -26,7 +26,7 @@ class UserManager {
      */
     static async create (data) {
         // Validate that the email and username aren't already in use.
-        if (await UserManager.getUser({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) 
+        if (await UserManager.get({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) 
             return { message: 'A user with that username or email already exists' } // If the username already exists, return null
         // Validate the password security.
         if (!PasswordUtils.checkPolicy(data.password).isValid) return { message: PasswordUtils.checkPolicy(data.password).message }
