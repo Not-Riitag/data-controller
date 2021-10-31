@@ -24,7 +24,7 @@ class UserManager {
      * @async
      * @returns {User|null}
      */
-    static async createUser (data) {
+    static async create (data) {
         // Validate that the email and username aren't already in use.
         if (await UserManager.getUser({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) return { message: 'A user with that username or email already exists' } // If the username already exists, return null
         // Validate the password security.
@@ -50,21 +50,11 @@ class UserManager {
      * @async
      * @returns {Session|null}
      */
-    static async getUserLogin (username, password) {
+    static async verify (username, password) {
         const user = await getCollection(Database.USERS).findOne({ username })
         if (user && crypto.scryptSync(password, user.username, 64).toString('hex') === user.password) return SessionManager.find(user)
         
         return null
-    }
-
-    /**
-     * Select and return the first admin user from the database.
-     * @async
-     * @returns {User}
-     */
-    static async getAdminUser () {
-      return await UserManager
-        .getUser({ permissions: 1022 })
     }
 
     /**
@@ -74,9 +64,18 @@ class UserManager {
      * @async
      * @returns {User}
      */
-    static async getUser (search, filters={}) {     
+    static async get (search, filters={}) {     
       const user = await (getCollection(Database.USERS)).findOne(search, {projection: filters});
       return user != null ? new User(user) : null
+    }
+
+    /**
+     * Remove the user from the database.
+     * @param {UserProperties} search 
+     * @returns 
+     */
+    static async remove (search) {
+      return await (getCollection(Database.USERS)).deleteOne(search);
     }
 
 }
