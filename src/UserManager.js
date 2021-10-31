@@ -22,11 +22,12 @@ class UserManager {
      * Create a user within the database and return the new user.
      * @param {UserProperties} data Serialized form of a user structure 
      * @async
-     * @returns {User|null}
+     * @returns {User|Object}
      */
-    static async createUser (data) {
+    static async create (data) {
         // Validate that the email and username aren't already in use.
-        if (await UserManager.getUser({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) return { message: 'A user with that username or email already exists' } // If the username already exists, return null
+        if (await UserManager.get({ $or: [{ $text: { $search: data.username, $caseSensitive: false } }, { email: data.email }] })) 
+            return { message: 'A user with that username or email already exists' } // If the username already exists, return null
         // Validate the password security.
         if (!PasswordUtils.checkPolicy(data.password).isValid) return { message: PasswordUtils.checkPolicy(data.password).message }
 
@@ -50,7 +51,7 @@ class UserManager {
      * @async
      * @returns {Session|null}
      */
-    static async getUserLogin (username, password) {
+    static async verify (username, password) {
         const user = await getCollection(Database.USERS).findOne({ username })
         if (user && crypto.scryptSync(password, user.username, 64).toString('hex') === user.password) return SessionManager.find(user)
         
@@ -58,25 +59,25 @@ class UserManager {
     }
 
     /**
-     * Select and return the first admin user from the database.
-     * @async
-     * @returns {User}
-     */
-    static async getAdminUser () {
-      return await UserManager
-        .getUser({ permissions: 1022 })
-    }
-
-    /**
      * Search the user database by a provided search type and filter.
      * @param {UserProperties} search A JSON-Based object containing the search
      * @param {UserProperties} filters A JSON-based value containing the filters
      * @async
-     * @returns {User}
+     * @returns {User|null}
      */
-    static async getUser (search, filters={}) {     
+    static async get (search, filters={}) {     
       const user = await (getCollection(Database.USERS)).findOne(search, {projection: filters});
       return user != null ? new User(user) : null
+    }
+
+    /**
+     * Remove the user from the database.
+     * @param {UserProperties} search 
+     * @async
+     * @returns 
+     */
+    static async remove (search) {
+      return await (getCollection(Database.USERS)).deleteOne(search);
     }
 
 }

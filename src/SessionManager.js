@@ -13,7 +13,7 @@ class SessionManager {
     static async ParseAuthorization (string) {
         switch (string.split(' ')[0]) {
             case 'Bearer':
-                return await SessionManager.getSession(string.split(' ')[1])
+                return await SessionManager.get(string.split(' ')[1])
             default:
                 return null
         }
@@ -45,7 +45,7 @@ class SessionManager {
      */
     static async find (user) {
         const session =　await this.getSession({ user: user.id })
-        if (session == null) return await SessionManager.createSession(user)
+        if (session == null) return await SessionManager.create(user)
 
         return new Session(session)
     }
