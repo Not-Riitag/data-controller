@@ -22,7 +22,7 @@ class UserManager {
      * Create a user within the database and return the new user.
      * @param {UserProperties} data Serialized form of a user structure 
      * @async
-     * @returns {User|null}
+     * @returns {User|Object}
      */
     static async create (data) {
         // Validate that the email and username aren't already in use.
@@ -63,7 +63,7 @@ class UserManager {
      * @param {UserProperties} search A JSON-Based object containing the search
      * @param {UserProperties} filters A JSON-based value containing the filters
      * @async
-     * @returns {User}
+     * @returns {User|null}
      */
     static async get (search, filters={}) {     
       const user = await (getCollection(Database.USERS)).findOne(search, {projection: filters});
