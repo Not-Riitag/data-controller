@@ -16,6 +16,20 @@ class SessionManager {
     }
 
     /**
+     * Parse the supplied authorization header and return the associated session.
+     * @param {String} string header 
+     * @returns {Session}
+     */
+    static async ParseAuthorization (string) {
+        switch (string.split(' ')[0]) {
+            case 'Bearer':
+                return await SessionManager.getSession(string.split(' ')[1])
+            default:
+                return null
+        }
+    }
+
+    /**
      * Find a session for the provided user, if it doesn't exist, create one.
      * @param {User} user
      * @async 
