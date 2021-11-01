@@ -21,7 +21,7 @@ class Tag {
     flags = 1
 
     constructor (data, convert=true) {
-        Object.assign(this, data, convert ? { user: UserManager.get(user) } : {})
+        Object.assign(this, data, convert ? { user: UserManager.get(data.user) } : {})
     }
 }
 
