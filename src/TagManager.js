@@ -10,7 +10,7 @@ class TagManager {
      * @param {Object} filter
      */
     static async get (filter) {
-        return getCollection(Database.TAGS).findOne(filter)
+        return await getCollection(Database.TAGS).findOne(filter)
     }
 
     /**
@@ -20,7 +20,7 @@ class TagManager {
     static async create (user) {
         if (TagManager.get({ user })) return null // Prevent duplicate entries
 
-        getCollection(Database.TAGS).insertOne(new Tag({ user: user.id }, false)) // Insert a new tag.
+        await getCollection(Database.TAGS).insertOne(new Tag({ user: user.id }, false)) // Insert a new tag.
 
         return new Tag({ user: user.id }) // Return a slightly different tag with the user-object attached.
     }
