@@ -1,3 +1,4 @@
+const { UserManager } = require("..");
 const { getCollection } = require("./Connection");
 const Database = require("./Enum/Database");
 const GameManager = require("./GameManager");
@@ -8,18 +9,20 @@ class TagManager {
 
     /**
      * Get user's tag based off of the user object.
-     * @param {Object} filter
+     * @param {User} user
      */
-    static async get (filter) {
-        return Object.assign({}, await getCollection(Database.TAGS).findOne(filter), { games: await TagManager.resolveGameList(filter.user) })
+    static async get (user) {
+        return Object.assign({}, await getCollection(Database.TAGS).findOne({ user: user.id }, { projection: { "_id": 0 } }), 
+        { user: Object.assign(user, { permissions: user.permissions.permissions }) }, 
+        { games: await TagManager.resolveGameList(user.id) })
     }
 
     static async resolveGameList (id) {
-        const games = await (await getCollection(Database.GAME_HISTORY).find({ user: id }, { projection: { user: 0 } }).toArray())
+        const games = await (await getCollection(Database.GAME_HISTORY).find({ user: id }, { projection: { user: 0, "_id": 0 } }).toArray())
         const list = []
 
         games.forEach(async (game) => {
-            list.push(Object.assign(game, await GameManager.get({ id: game.game })))
+            list.push(Object.assign(game, { game: await GameManager.get(game.game) }))
         })
 
         return await list
