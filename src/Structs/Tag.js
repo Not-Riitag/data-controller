@@ -21,7 +21,9 @@ class Tag {
     flags = 1
 
     constructor (data, convert=true) {
-        Object.assign(this, data, convert ? { user: UserManager.get(data.user) } : {})
+        Object.assign(this, data)
+
+        async () => Object.assign(this, convert ? { user: await UserManager.get(data.user) } : {})
     }
 }
 

@@ -1,5 +1,6 @@
 const { getCollection } = require("./Connection");
 const Database = require("./Enum/Database");
+const GameManager = require("./GameManager");
 const Tag = require("./Structs/Tag");
 const User = require("./Structs/User");
 
@@ -10,7 +11,18 @@ class TagManager {
      * @param {Object} filter
      */
     static async get (filter) {
-        return Object.assign({}, await getCollection(Database.TAGS).findOne(filter), await getCollection(Database.GAME_HISTORY).find(filter))
+        return Object.assign({}, await getCollection(Database.TAGS).findOne(filter), { games: await TagManager.resolveGameList(filter.user) })
+    }
+
+    static async resolveGameList (id) {
+        const games = await (await getCollection(Database.GAME_HISTORY).find({ user: id }, { projection: { user: 0 } }).toArray())
+        const list = []
+
+        games.forEach(async (game) => {
+            list.push(Object.assign(game, await GameManager.get({ id: game.game })))
+        })
+
+        return await list
     }
 
     /**
