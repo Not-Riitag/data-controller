@@ -26,7 +26,7 @@ class SessionManager {
      * @returns {Session}
      */
     static async get (filter) {
-        return await getCollection(Database.SESSIONS).findOne(filter)
+        return new Session(await getCollection(Database.SESSIONS).findOne(filter))
     }
 
     /**

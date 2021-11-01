@@ -18,7 +18,7 @@ class Session {
     createdAt = undefined
 
     constructor(data) {
-        Object.assign(this, data, UserManager.getUser({ id: data.user.id }))
+        Object.assign(this, data, UserManager.get({ id: data.user.id }))
     }
 }
 
