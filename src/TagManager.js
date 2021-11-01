@@ -10,7 +10,7 @@ class TagManager {
      * @param {Object} filter
      */
     static async get (filter) {
-        return await getCollection(Database.TAGS).findOne(filter)
+        return Object.assign({}, await getCollection(Database.TAGS).findOne(filter), await getCollection(Database.GAME_HISTORY).find(filter))
     }
 
     /**
