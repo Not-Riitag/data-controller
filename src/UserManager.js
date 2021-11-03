@@ -36,7 +36,7 @@ class UserManager {
             username: data.username,
             email: data.email,
             password: PasswordUtils.makePassword(data.password, data.username),
-            permissions: 0,
+            permissions: data.permissions || 0,
             created: new Date()
         }
 
@@ -57,7 +57,7 @@ class UserManager {
         
         return null
     }
-
+  
     /**
      * Search the user database by a provided search type and filter.
      * @param {UserProperties} search A JSON-Based object containing the search
